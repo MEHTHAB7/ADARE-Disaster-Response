@@ -1,0 +1,16 @@
+gymnasium
+stable-baselines3
+osmnx
+networkx
+pandas
+numpy
+fastapi
+uvicorn
+requests
+shimmy[gymnasium]
+torch
+matplotlib
+seaborn
+geopandas
+pydantic
+openai

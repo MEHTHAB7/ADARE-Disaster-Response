@@ -1,0 +1,24 @@
+name: openenv-disaster-response
+version: "1.0.0"
+description: "A real-world OpenEnv simulation for multi-agent disaster logistics and emergency response dispatch."
+environment_class: "env.openenv_env:DisasterOpenEnv"
+tasks:
+  - id: simple_rescue
+    name: "Easy Task: Single Dispatch"
+    description: "Route 1 agent to rescue a single nearby victim with a clear path."
+  - id: blocked_rescue
+    name: "Medium Task: Obstacle Navigation"
+    description: "Orchestrate 2 agents to rescue 5 victims while calculating detours around collapsed physical bridges and flood zones."
+  - id: swarm_rescue
+    name: "Hard Task: City Swarm"
+    description: "Direct a 4-agent fleet to navigate a massive city grid and save 40 victims under extreme topological restrictions."
+  - id: expert_rescue
+    name: "Expert Task: Total Crisis"
+    description: "Coordinate an 8-agent fleet to navigate a heavily blocked urban grid and save 100 victims under absolute chaos."
+metadata:
+  tags:
+    - logistics
+    - multi-agent
+    - spatial-routing
+    - real-world
+  author: "Disaster Platform Team"

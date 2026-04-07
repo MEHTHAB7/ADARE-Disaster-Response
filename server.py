@@ -9,6 +9,8 @@ from typing import List, Dict, Any
 
 from data.pipeline import OSMLoader, ScenarioGenerator
 from env.core import OpenEnv
+from env.openenv_env import DisasterOpenEnv
+from env.schemas import Action, Observation, OpenEnvState
 from agents.heuristic_agent import HeuristicAgent
 from agents.rl_agent import RLAgent
 from agents.hybrid_agent import HybridAgent
@@ -134,6 +136,53 @@ async def stop_sim():
     with state_manager.lock:
         state_manager.running = False
     return {"status": "stopped"}
+
+# --- OpenEnv Standard API Routes ---
+openenv_instance = None
+
+@app.post("/reset")
+async def reset_env(config: Dict[str, Any] = None) -> Observation:
+    global openenv_instance
+    
+    task_id = "simple_rescue"
+    if config and "task_id" in config:
+        task_id = config["task_id"]
+        
+    diff_map = {
+        "simple_rescue": 1,
+        "blocked_rescue": 2,
+        "swarm_rescue": 3,
+        "expert_rescue": 4
+    }
+    difficulty = diff_map.get(task_id, 1)
+
+    loader = OSMLoader()
+    gen = ScenarioGenerator(loader)
+    scenario = gen.generate(difficulty=difficulty)
+    openenv_instance = DisasterOpenEnv(scenario)
+    
+    obs = openenv_instance.reset()
+    return obs
+
+@app.post("/step")
+async def step_env(action: Action):
+    global openenv_instance
+    if openenv_instance is None:
+        # Fallback if reset wasn't called (though validate should call reset first)
+        loader = OSMLoader()
+        gen = ScenarioGenerator(loader)
+        scenario = gen.generate(difficulty=1)
+        openenv_instance = DisasterOpenEnv(scenario)
+        openenv_instance.reset()
+        
+    obs, reward_obj, done, info = openenv_instance.step(action)
+    return {
+        "obs": obs,
+        "reward": reward_obj,
+        "done": done,
+        "info": info
+    }
+
 
 import os
 if os.path.exists("ui/dist"):

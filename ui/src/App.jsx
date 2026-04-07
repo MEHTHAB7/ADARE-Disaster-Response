@@ -41,7 +41,7 @@ export default function App() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      fetch('http://localhost:7860/state')
+      fetch('/state')
         .then(res => res.json())
         .then(d => {
             if (d.location) setData(d);
@@ -54,7 +54,7 @@ export default function App() {
   const handleStart = async () => {
     setLoading(true);
     try {
-        const res = await fetch('http://localhost:7860/start', {
+        const res = await fetch('/start', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(params)

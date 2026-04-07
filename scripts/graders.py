@@ -73,19 +73,19 @@ class OpenEnvGrader:
         """Task: 1 agent, 1 victim, no obstacles"""
         print("Grading Simple Rescue...")
         env = self._create_env("Grid-Simple", num_agents=1, num_victims=1, use_obstacles=False, seed=42)
-        return self._run_single_episode(env, agent_func, max_steps=50)
+        return self._run_single_episode(env, agent_func, max_steps=15)
 
     def grade_blocked_rescue(self, agent_func: Callable) -> float:
         """Task: 2 agents, 5 victims, obstacles"""
         print("Grading Blocked Rescue...")
         env = self._create_env("Grid-Blocked", num_agents=2, num_victims=5, use_obstacles=True, seed=42)
-        return self._run_single_episode(env, agent_func, max_steps=150)
+        return self._run_single_episode(env, agent_func, max_steps=30)
 
     def grade_swarm_rescue(self, agent_func: Callable) -> float:
         """Task: 4 agents, 40 victims, obstacles"""
         print("Grading Swarm Rescue...")
         env = self._create_env("Grid-Swarm", num_agents=4, num_victims=40, use_obstacles=True, seed=42)
-        return self._run_single_episode(env, agent_func, max_steps=500)
+        return self._run_single_episode(env, agent_func, max_steps=50)
 
     def grade_expert_rescue(self, agent_func: Callable) -> float:
         """Task: 8 agents, 100 victims, numerous obstacles"""
@@ -93,4 +93,4 @@ class OpenEnvGrader:
         # Increase obstacles heavily by calling _create_env logic, but _create_env handles 20 obstacles by default.
         # So we'll pass seed and it'll run the default dense map
         env = self._create_env("Grid-Expert", num_agents=8, num_victims=100, use_obstacles=True, seed=99)
-        return self._run_single_episode(env, agent_func, max_steps=1000)
+        return self._run_single_episode(env, agent_func, max_steps=100)

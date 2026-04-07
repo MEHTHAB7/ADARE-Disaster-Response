@@ -1,6 +1,7 @@
 import os
 import json
-from openai import OpenAI
+import asyncio
+from openai import AsyncOpenAI
 from env.schemas import Observation, Action
 from scripts.graders import OpenEnvGrader
 
@@ -11,10 +12,21 @@ HF_TOKEN = os.environ.get("HF_TOKEN")
 LOCAL_IMAGE_NAME = os.environ.get("LOCAL_IMAGE_NAME") # Optional for from_docker_image()
 
 # All LLM calls use the OpenAI client configured via these variables
-client = OpenAI(
+client = AsyncOpenAI(
     api_key=HF_TOKEN if HF_TOKEN else "ollama",
     base_url=API_BASE_URL
 )
+
+async def _fetch_action(user_prompt: str) -> str:
+    response = await client.chat.completions.create(
+        model=MODEL_NAME,
+        messages=[{"role": "user", "content": user_prompt}],
+        response_format={"type": "json_object"},
+        temperature=0.0,
+        timeout=10.0
+    )
+    return response.choices[0].message.content
+
 
 def llm_agent(obs: Observation) -> Action:
     print("STEP - Planning action for current observation")
@@ -27,15 +39,7 @@ def llm_agent(obs: Observation) -> Action:
     user_prompt = f"{system_prompt}\n\nCurrent State: {obs.model_dump_json()}\n\nReturn ONLY a valid JSON object matching this schema: {{\"agent_moves\": [int, int, ...]}} with length matching the number of agents."
     
     try:
-        response = client.chat.completions.create(
-            model=MODEL_NAME,
-            messages=[{"role": "user", "content": user_prompt}],
-            response_format={"type": "json_object"},
-            temperature=0.0,
-            timeout=120.0
-        )
-        
-        text = response.choices[0].message.content
+        text = asyncio.run(_fetch_action(user_prompt))
         parsed = json.loads(text)
         return Action(agent_moves=parsed.get("agent_moves", [0] * len(obs.agents)))
     except Exception as e:

@@ -26,4 +26,4 @@ COPY --from=builder /ui/dist /app/ui/dist
 
 EXPOSE 7860
 
-CMD ["python", "server.py"]
+CMD ["uvicorn", "server.app:app", "--host", "0.0.0.0", "--port", "7860"]

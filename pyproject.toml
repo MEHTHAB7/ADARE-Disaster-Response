@@ -24,8 +24,12 @@ dependencies = [
     "seaborn",
     "geopandas",
     "pydantic",
-    "openai"
+    "openai",
+    "openenv-core>=0.2.0"
 ]
+
+[project.scripts]
+server = "server.app:app"
 
 [project.optional-dependencies]
 dev = ["pytest"]

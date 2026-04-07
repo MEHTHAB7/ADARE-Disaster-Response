@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "openenv-disaster-response"
+version = "1.0.0"
+description = "A real-world OpenEnv simulation for multi-agent disaster logistics and emergency response dispatch."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "gymnasium",
+    "stable-baselines3",
+    "osmnx",
+    "networkx",
+    "pandas",
+    "numpy",
+    "fastapi",
+    "uvicorn",
+    "requests",
+    "shimmy[gymnasium]",
+    "torch",
+    "matplotlib",
+    "seaborn",
+    "geopandas",
+    "pydantic",
+    "openai"
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]

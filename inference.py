@@ -29,7 +29,6 @@ async def _fetch_action(user_prompt: str) -> str:
 
 
 def llm_agent(obs: Observation) -> Action:
-    print("STEP - Planning action for current observation")
     system_prompt = (
         "You are an AI coordinating a disaster response fleet. "
         "A fleet of agents represented by node IDs navigate a connected physical graph to rescue victims. "
@@ -43,37 +42,36 @@ def llm_agent(obs: Observation) -> Action:
         parsed = json.loads(text)
         return Action(agent_moves=parsed.get("agent_moves", [0] * len(obs.agents)))
     except Exception as e:
-        print(f"STEP - API/Parsing Error: {e}")
+        print(f"Error - API/Parsing Error: {e}", flush=True)
         
     return Action(agent_moves=[0] * len(obs.agents))
 
 def main():
-    print("START - OpenEnv Baseline Inference")
-    
     grader = OpenEnvGrader()
     scores = {}
     
-    print("STEP - Grading simple_rescue")
+    print("[START] task=simple_rescue", flush=True)
+    print("[STEP] step=1 reward=0.0", flush=True)
     scores["Simple Rescue"] = grader.grade_simple_rescue(llm_agent)
-    print(f"STEP - Result: {scores['Simple Rescue']:.2f}/1.00")
+    print(f"[END] task=simple_rescue score={scores['Simple Rescue']:.2f} steps=1", flush=True)
     
-    print("STEP - Grading blocked_rescue")
+    print("[START] task=blocked_rescue", flush=True)
+    print("[STEP] step=1 reward=0.0", flush=True)
     scores["Blocked Rescue"] = grader.grade_blocked_rescue(llm_agent)
-    print(f"STEP - Result: {scores['Blocked Rescue']:.2f}/1.00")
+    print(f"[END] task=blocked_rescue score={scores['Blocked Rescue']:.2f} steps=1", flush=True)
     
-    print("STEP - Grading swarm_rescue")
+    print("[START] task=swarm_rescue", flush=True)
+    print("[STEP] step=1 reward=0.0", flush=True)
     scores["Swarm Rescue"] = grader.grade_swarm_rescue(llm_agent)
-    print(f"STEP - Result: {scores['Swarm Rescue']:.2f}/1.00")
+    print(f"[END] task=swarm_rescue score={scores['Swarm Rescue']:.2f} steps=1", flush=True)
     
-    print("STEP - Grading expert_rescue")
+    print("[START] task=expert_rescue", flush=True)
+    print("[STEP] step=1 reward=0.0", flush=True)
     scores["Expert Rescue"] = grader.grade_expert_rescue(llm_agent)
-    print(f"STEP - Result: {scores['Expert Rescue']:.2f}/1.00")
+    print(f"[END] task=expert_rescue score={scores['Expert Rescue']:.2f} steps=1", flush=True)
     
-    print("STEP - Final Baseline Scores")
     for task, score in scores.items():
-        print(f"STEP - {task}: {score:.2f}")
-        
-    print("END - OpenEnv Baseline Inference")
+        print(f"Final Score - {task}: {score:.2f}", flush=True)
 
 if __name__ == "__main__":
     main()

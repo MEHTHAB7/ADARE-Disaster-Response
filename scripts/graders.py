@@ -57,7 +57,7 @@ class OpenEnvGrader:
                     break
             except Exception as e:
                 print(f"Agent failed during episode execution: {e}")
-                return 0.0 # Critical failure equals 0
+                return 0.01 # Critical failure clamped to > 0
                 
         # Calculate grade 0.0 to 1.0 from the core physics simulation
         raw_env = env._core_env
@@ -67,7 +67,7 @@ class OpenEnvGrader:
         time_penalty = (raw_env.current_time / max_steps) * 0.15 # Up to 15% penalty
         
         final_score = survival_rate - (time_penalty if survival_rate > 0.0 else 0)
-        return max(0.0, min(1.0, final_score))
+        return max(0.01, min(0.99, final_score))
 
     def grade_simple_rescue(self, agent_func: Callable) -> float:
         """Task: 1 agent, 1 victim, no obstacles"""

@@ -141,7 +141,7 @@ async def stop_sim():
 openenv_instance = None
 
 @app.post("/reset")
-async def reset_env(config: Dict[str, Any] = None) -> Observation:
+async def reset_env(config: Dict[str, Any] = None) -> OpenEnvState:
     global openenv_instance
     
     task_id = "simple_rescue"
@@ -161,8 +161,8 @@ async def reset_env(config: Dict[str, Any] = None) -> Observation:
     scenario = gen.generate(difficulty=difficulty)
     openenv_instance = DisasterOpenEnv(scenario)
     
-    obs = openenv_instance.reset()
-    return obs
+    openenv_instance.reset()
+    return openenv_instance.state()
 
 @app.post("/step")
 async def step_env(action: Action):

@@ -77,12 +77,17 @@ def run_task(grader, task_name, task_args, max_steps):
         if done:
             break
             
-    # Calculate success
+    # Calculate success and score
     raw_env = env._core_env if hasattr(env, '_core_env') else env
     success = (raw_env.rescued_count == raw_env.total_victims) and (raw_env.total_victims > 0)
     
+    survival_rate = raw_env.rescued_count / max(1, raw_env.total_victims)
+    time_penalty = (raw_env.current_time / max_steps) * 0.15
+    final_score = survival_rate - (time_penalty if survival_rate > 0.0 else 0)
+    final_score = max(0.01, min(0.99, final_score))
+    
     rewards_str = ",".join([f"{r:.2f}" for r in rewards_list])
-    print(f"[END] success={str(success).lower()} steps={len(rewards_list)} rewards={rewards_str}", flush=True)
+    print(f"[END] task={task_name} score={final_score:.2f} success={str(success).lower()} steps={len(rewards_list)} rewards={rewards_str}", flush=True)
 
 def main():
     grader = OpenEnvGrader()

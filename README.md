@@ -94,14 +94,20 @@ ADRAE++ fully complies with the **OpenEnv specification**.
 - **Action Space**: `Action(agent_moves: List[int])` representing edge traversal choices per agent.
 - **Reward Signal**: Rich continuous tracking (`Reward(value=float)`) penalizing gridlock while continuously rewarding sequential rescues to provide steady partial-progress gradients.
 
-### Local Ollama LLM Baseline
-To test the environment against unstructured local planners using Ollama (free of cost):
+### OpenEnv Hackathon Evaluation (Inference)
+To evaluate the simulation suite against the OpenEnv hackathon standard bounds:
+
 ```bash
-# Ensure Ollama is running in the background with the mistral model:
-# ollama run mistral
-python scripts/baseline_inference.py
+# Ensure you provide the required Environment Variables:
+# HF_TOKEN is strictly mandatory.
+export HF_TOKEN="your_huggingface_token"
+export MODEL_NAME="gpt-4o-mini" # Optional default
+export API_BASE_URL="https://api.openai.com/v1" # Optional default
+
+# Launch the official benchmark
+python inference.py
 ```
-This script evaluates the local Mistral model on four official tasks defined in `openenv.yaml` (`simple_rescue`, `blocked_rescue`, `swarm_rescue`, `expert_rescue`) providing deterministic scores out of `1.0`.
+This strictly executes the OpenAI client conforming to the standard stdout `[START]`, `[STEP]`, and `[END]` syntax grading limits evaluated through the benchmark across native difficulty paradigms.
 
 ### Official Difficulty Tiers
 To ensure standardized benchmarking, the project defines four strict difficulty paradigms. External evaluators can test against these tiers to formally benchmark their agents:

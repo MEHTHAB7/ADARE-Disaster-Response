@@ -165,7 +165,7 @@ async def reset_env(config: Dict[str, Any] = None) -> OpenEnvState:
     return openenv_instance.state()
 
 @app.post("/step")
-async def step_env(action: Action):
+async def step_env(action: Action) -> OpenEnvState:
     global openenv_instance
     if openenv_instance is None:
         # Fallback if reset wasn't called (though validate should call reset first)
@@ -176,12 +176,12 @@ async def step_env(action: Action):
         openenv_instance.reset()
         
     obs, reward_obj, done, info = openenv_instance.step(action)
-    return {
-        "obs": obs,
-        "reward": reward_obj,
-        "done": done,
-        "info": info
-    }
+    return OpenEnvState(
+        obs=obs,
+        reward=reward_obj,
+        done=done,
+        info=info
+    )
 
 
 import os

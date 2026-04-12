@@ -31,6 +31,6 @@ class Reward(BaseModel):
 
 class OpenEnvState(BaseModel):
     obs: Observation
-    reward: Reward
+    reward: float = Field(0.0, description="The float representation of the step's success logic.")
     done: bool
     info: Dict = Field(default_factory=dict)

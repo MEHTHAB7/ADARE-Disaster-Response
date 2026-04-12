@@ -51,7 +51,7 @@ class DisasterOpenEnv:
         self._current_obs = self._convert_obs()
         return self._current_obs
 
-    def step(self, action: Action) -> Tuple[Observation, Reward, bool, Dict]:
+    def step(self, action: Action) -> Tuple[Observation, float, bool, Dict]:
         # Unwrap Pydantic Action into raw list for the core physics bounds
         raw_actions = action.agent_moves
         _, reward_val, self._terminated, _, self._info = self._core_env.step(raw_actions)
@@ -59,12 +59,12 @@ class DisasterOpenEnv:
         self._reward_tracker += reward_val
         self._current_obs = self._convert_obs()
         
-        return self._current_obs, Reward(value=reward_val), self._terminated, self._info
+        return self._current_obs, reward_val, self._terminated, self._info
 
     def state(self) -> OpenEnvState:
         return OpenEnvState(
             obs=self._current_obs if self._current_obs else self.reset(),
-            reward=Reward(value=self._reward_tracker),
+            reward=self._reward_tracker,
             done=self._terminated,
             info=self._info
         )
